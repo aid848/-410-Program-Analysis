@@ -24,6 +24,8 @@ public class Main {
             System.out.println("no file chosen");
         }
 
+       p.parseFields();
+
         interfaces.entrySet().forEach(entry->{
             System.out.println(entry.getKey());
             entry.getValue().print();

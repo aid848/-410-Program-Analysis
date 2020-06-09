@@ -42,7 +42,6 @@ public class Parser {
         } else {
             throw new RuntimeException("Invalid Directory");
         }
-        parseFields();
     }
 
     private void parseClass(JavaClass c) {
@@ -77,7 +76,7 @@ public class Parser {
         }
     }
 
-    private void parseFields() {
+    public void parseFields() {
         Main.classes.entrySet().forEach(entry->{
             if (entry.getValue() != null) {
                 entry.getValue().setFields();
