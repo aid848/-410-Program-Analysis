@@ -26,18 +26,21 @@ public class Main {
 
        p.parseFields();
 
-        interfaces.entrySet().forEach(entry->{
-            System.out.println(entry.getKey());
-            entry.getValue().print();
-        });
+//        interfaces.entrySet().forEach(entry->{
+//            System.out.println(entry.getKey());
+//            entry.getValue().print();
+//        });
+//
+//        classes.entrySet().forEach(entry->{
+//            System.out.println(entry.getKey());
+//            if (entry.getValue() != null) {
+//
+//                entry.getValue().print();
+//            }
+//        });
 
-        classes.entrySet().forEach(entry->{
-            System.out.println(entry.getKey());
-            if (entry.getValue() != null) {
-
-                entry.getValue().print();
-            }
-        });
+        Exporter ex = new Exporter(interfaces,classes);
+        ex.writeToJson();
 
     }
 
