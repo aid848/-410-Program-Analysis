@@ -3,13 +3,15 @@ package Backend;
 import ui.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClassObj {
     String name;
-    List<String> temp;
-    List<ClassObj> fields = new ArrayList<>();
-    List<String> methods;
+    List<String> temp = new ArrayList<>();
+    Map<ClassObj, Integer> fields = new HashMap<>();
+    List<String> methods = new ArrayList<>();;
     ClassObj superClass;
     List<InterfaceObj> interfaces = new ArrayList<>();
 
@@ -25,15 +27,34 @@ public class ClassObj {
         }
     }
 
-    public void setFields() {
-        if (temp == null) {
-            return;
-        }
+    public ClassObj(String name) {
+        this.name = name;
+    }
+
+    public void setFieldFrequency() {
         for (String t: temp) {
-            if (Main.classes.containsKey(t) && Main.classes.get(t) != null) {
-                fields.add(Main.classes.get(t));
-            } else if (Main.interfaces.containsKey(t) && Main.interfaces.get(t) != null) {
-                fields.add(Main.interfaces.get(t));
+
+        }
+    }
+
+    public void setFields() {
+        for (String t: temp) {
+            if (Main.classes.containsKey(t)) {
+                if (fields.containsKey(Main.classes.get(t))) {
+                    int freq = fields.get(Main.classes.get(t));
+                    freq++;
+                    fields.put(Main.classes.get(t), freq);
+                } else {
+                    fields.put(Main.classes.get(t), 1);
+                }
+            } else if (Main.interfaces.containsKey(t)) {
+                if (fields.containsKey(Main.interfaces.get(t))) {
+                    int freq = fields.get(Main.interfaces.get(t));
+                    freq++;
+                    fields.put(Main.interfaces.get(t), freq);
+                } else {
+                    fields.put(Main.classes.get(t), 1);
+                }
             }
         }
     }
@@ -51,14 +72,23 @@ public class ClassObj {
     }
 
     public void print() {
+        String indent = "    ";
         System.out.println("Class name: " + name);
         if (methods != null) {
-            System.out.println("Methods: " + methods);
+            System.out.println(indent + "Methods: " + methods);
         }
-        System.out.println("Fields: ");
-        for (ClassObj f: fields) {
-            System.out.println(f.getName());
+        String fieldsOutput = "Fields: ";
+        for (ClassObj f: fields.keySet()) {
+            fieldsOutput = fieldsOutput.concat(f.getName() + " - " + fields.get(f) + ", ");
         }
-        System.out.println("Interfaces: " + interfaces);
+        System.out.println(indent + fieldsOutput);
+        if (this.superClass != null) {
+            System.out.println(indent + "Superclass: " + this.superClass.getName());
+        }
+        String interfaceOutput = "Interfaces: ";
+        for (InterfaceObj i: interfaces) {
+            interfaceOutput.concat(i.getName() + " , ");
+        }
+        System.out.println(indent + interfaceOutput);
     }
 }
