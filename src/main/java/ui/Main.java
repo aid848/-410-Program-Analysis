@@ -52,7 +52,7 @@ public class Main {
         }else { // todo the mac bit here needs work
             String s = "/bin/bash http-server";
             Runtime.getRuntime().exec(s);
-           Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/"));
+           Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI/"));
         }
     }
 }
