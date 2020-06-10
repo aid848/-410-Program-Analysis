@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import Backend.*;
 
+import static java.awt.Desktop.isDesktopSupported;
+
 public class Main {
     public static Map<String, InterfaceObj> interfaces = new HashMap<>();
     public static Map<String, ClassObj> classes = new HashMap<>();
@@ -46,17 +48,14 @@ public class Main {
         Exporter ex = new Exporter(interfaces,classes);
         ex.writeToJson();
         String os = System.getProperty("os.name").toLowerCase();
+        System.out.println(os);
         if(os.contains("win")) {
             Runtime.getRuntime().exec("Frontend UI/winrun.bat");
         }else{ // todo the mac bit here needs work
-            Runtime.getRuntime().exec("Frontend UI/macrun.sh");
-            Runtime.getRuntime().exec("Frontend UI/macrun.sh");
+//            Runtime.getRuntime().exec("Frontend UI/macrun.sh");
+            String s = "/bin/bash http-server";
+            Runtime.getRuntime().exec(s);
         }
-
         Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI"));
-
     }
-
-
-
 }
