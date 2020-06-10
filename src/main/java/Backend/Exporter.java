@@ -5,10 +5,7 @@ import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // Exporter class from backend data structure to json for front end
 public class Exporter {
@@ -17,13 +14,14 @@ public class Exporter {
     public List<Tuple> classes;
     private Hashtable<String, Integer> ids;
     private int count;
-
+    private Map<Integer, Boolean> allowed;
     // TODO check sources and target fields for existance in the written nodes
 
     public Exporter(Map<String, InterfaceObj> interfaces, Map<String, ClassObj> classes) {
 
         this.interfaces = new ArrayList<>();
         this.classes = new ArrayList<>();
+        allowed = new HashMap<>();
         ids = new Hashtable<>();
         count = 1;
 
@@ -46,15 +44,15 @@ public class Exporter {
     }
 
     public void writeToJson() {
-        JFrame outside = new JFrame();
+//        JFrame outside = new JFrame();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Select save location");
-        int good = fileChooser.showSaveDialog(outside);
+        int good = fileChooser.showSaveDialog(null);
         if (good == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             String directory = file.getAbsolutePath();
             System.out.println(directory + ".json");
-            outside.dispose();
+//            outside.dispose();
             try {
                 write(directory);
             }catch (Exception e) {
@@ -112,6 +110,10 @@ public class Exporter {
     }
 
     private void writeLink(JSONArray links, int src, int dest, String type) {
+
+        if(!allowed.containsKey(src) || !allowed.containsKey(dest)) {
+            return;
+        }
         JSONObject ob = new JSONObject();
         ob.put("source", src);
         ob.put("target", dest);
@@ -127,6 +129,7 @@ public class Exporter {
                 ob.put("label", "interface");
                 ob.put("id", t.id);
                 nodes.add(ob);
+                allowed.put(t.id, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -138,6 +141,7 @@ public class Exporter {
                 ob.put("label", "class");
                 ob.put("id", t.id);
                 nodes.add(ob);
+                allowed.put(t.id, true);
             } catch (Exception e) {
                 e.printStackTrace();
             }

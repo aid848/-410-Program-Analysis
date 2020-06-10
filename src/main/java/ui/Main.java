@@ -23,7 +23,6 @@ public class Main {
         } else {
             System.out.println("no file chosen");
         }
-
        p.parseFields();
 
 //        interfaces.entrySet().forEach(entry->{
