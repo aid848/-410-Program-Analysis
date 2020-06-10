@@ -1,7 +1,12 @@
 package ui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import Backend.*;
@@ -10,7 +15,7 @@ public class Main {
     public static Map<String, InterfaceObj> interfaces = new HashMap<>();
     public static Map<String, ClassObj> classes = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         Parser p = new Parser();
 
         // modified from https://mkyong.com/swing/java-swing-jfilechooser-example/
@@ -40,6 +45,15 @@ public class Main {
 
         Exporter ex = new Exporter(interfaces,classes);
         ex.writeToJson();
+        String os = System.getProperty("os.name").toLowerCase();
+        if(os.contains("win")) {
+            Runtime.getRuntime().exec("Frontend UI/winrun.bat");
+        }else{ // todo the mac bit here needs work
+            Runtime.getRuntime().exec("Frontend UI/macrun.sh");
+            Runtime.getRuntime().exec("Frontend UI/macrun.sh");
+        }
+
+        Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI"));
 
     }
 

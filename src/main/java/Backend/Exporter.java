@@ -52,7 +52,7 @@ public class Exporter {
                 @Override
                 public void run() {
                     JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setDialogTitle("Select save location");
+                    fileChooser.setDialogTitle("Select save copy location");
                     int good = fileChooser.showSaveDialog(null);
                     if (good == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
@@ -86,6 +86,14 @@ public class Exporter {
         FileWriter f = new FileWriter(new File(directory+".json"));
         outer.writeJSONString(f);
         f.close();
+        File output = new File("Frontend UI/graph.json");
+        if (output.exists()) {
+            output.delete();
+        }
+        FileWriter defaultForVisualWriter = new FileWriter(output);
+        outer.writeJSONString(defaultForVisualWriter);
+        defaultForVisualWriter.close();
+
     }
 
     private void writeLinks(JSONArray links) {
