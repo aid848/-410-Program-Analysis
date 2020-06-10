@@ -57,7 +57,7 @@ public class Parser {
         }
         for (String i: c.getInterfaceNames()) {
             if (!Main.interfaces.containsKey(i)) {
-                Main.interfaces.put(i, null);
+                Main.interfaces.put(i, new InterfaceObj(i));
             }
         }
         for (Field f: c.getFields()) {
@@ -68,7 +68,7 @@ public class Parser {
             Main.interfaces.put(interfaceObj.getName(), interfaceObj);
         } else {
             if (!c.getSuperclassName().equals("java.lang.Object") && !Main.classes.containsKey(c.getSuperclassName())) {
-                Main.classes.put(c.getSuperclassName(), null);
+                Main.classes.put(c.getSuperclassName(), new ClassObj(c.getSuperclassName()));
             }
 
             classObj = new ClassObj(c.getClassName(), fields, methods, c.getSuperclassName(), c.getInterfaceNames());
