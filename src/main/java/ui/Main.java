@@ -45,14 +45,14 @@ public class Main {
 
         Exporter ex = new Exporter(interfaces,classes);
         ex.writeToJson();
-        String os = System.getProperty("os.name").toLowerCase();
-        if(os.contains("win")) {
-            Runtime.getRuntime().exec("Frontend UI/winrun.bat");
-            Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI"));
-        }else { // todo the mac bit here needs work
-            String s = "/bin/bash http-server";
-            Runtime.getRuntime().exec(s);
-           Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI/"));
-        }
+//        String os = System.getProperty("os.name").toLowerCase();
+//        if(os.contains("win")) {
+//            Runtime.getRuntime().exec("Frontend UI/winrun.bat");
+//            Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI"));
+//        }else { // todo the mac bit here needs work
+//            String s = "/bin/bash http-server";
+//            Runtime.getRuntime().exec(s);
+//           Desktop.getDesktop().browse(new URI("http://127.0.0.1:8080/Frontend%20UI/"));
+//        }
     }
 }
