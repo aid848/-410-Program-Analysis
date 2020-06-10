@@ -4,8 +4,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 // Exporter class from backend data structure to json for front end
 public class Exporter {
@@ -44,23 +46,30 @@ public class Exporter {
     }
 
     public void writeToJson() {
-//        JFrame outside = new JFrame();
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Select save location");
-        int good = fileChooser.showSaveDialog(null);
-        if (good == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            String directory = file.getAbsolutePath();
-            System.out.println(directory + ".json");
-//            outside.dispose();
+        try {
+            final String[] directory = {"graph"};
+            EventQueue.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setDialogTitle("Select save location");
+                    int good = fileChooser.showSaveDialog(null);
+                    if (good == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        directory[0] = file.getAbsolutePath();
+                    } else {
+                        System.out.println("Save error");
+                    }
+                }
+            });
             try {
-                write(directory);
-            }catch (Exception e) {
+                write(directory[0]);
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
-        } else {
-            System.out.println("Save error");
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
