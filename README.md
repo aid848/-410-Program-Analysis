@@ -8,5 +8,5 @@ Dependencies and required software:
 
 
 Sources:
-1. Parts of Front end (index.html) adapted from: http://bl.ocks.org/fancellu/2c782394602a93921faff74e594d1bb1
+1. Parts of Front end adapted from: http://bl.ocks.org/fancellu/2c782394602a93921faff74e594d1bb1
 (GNU General Public License version 3)
