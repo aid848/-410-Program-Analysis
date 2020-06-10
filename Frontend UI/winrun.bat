@@ -1,0 +1,2 @@
+@echo on
+http-server
