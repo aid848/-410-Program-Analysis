@@ -12,8 +12,8 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
             'refX':13,
             'refY':0,
             'orient':'auto',
-            'markerWidth':13,
-            'markerHeight':13,
+            'markerWidth':9,
+            'markerHeight':9,
             'xoverflow':'visible'})
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
@@ -21,7 +21,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         .style('stroke','#999');
 
     var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
+        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.1))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -64,7 +64,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
             .attrs({
                 'class': 'edgelabel',
                 'id': function (d, i) {return 'edgelabel' + i},
-                'font-size': 15,
+                'font-size': 12,
                 'fill': '#aaa'
             });
 
@@ -88,21 +88,23 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
 
         node.append("circle")
             .attr("r", 5)
-            .style("fill", function (d) {return colors(d.group);})
+            .style("fill", getColour)
 
         node.append("title")
             .text(function (d) {return d.id;});
 
         node.append("text")
             .attr("dy", -3)
-            .text(function (d) {return d.name+": "+d.label;});
+            .text(function (d) {return d.name+": "+d.label;})
+            .style('fill', getTextColour)
+            .attr('font-size', 15);
 
         simulation
             .nodes(nodes)
             .on("tick", ticked);
 
         simulation.force("link")
-            .links(links);
+            .links(links)
     }
 
     function ticked() {
@@ -134,7 +136,19 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
     }
 
     function getColour(d) {
-        return colors(d.group);
+        if (d.dependencies >= 10) {
+            return "red";
+        } else {
+            return d3.interpolateOrRd(0.35);
+        }
+    }
+
+    function getTextColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        } else {
+            return "black";
+        }
     }
 
     function dragstarted(d) {

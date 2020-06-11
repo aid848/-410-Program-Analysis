@@ -191,7 +191,6 @@ public class Exporter {
             ob.put("source", src);
             ob.put("target", dest);
             ob.put("type", type);
-            // System.out.println(ob);
             links.add(ob);
         }
     }
