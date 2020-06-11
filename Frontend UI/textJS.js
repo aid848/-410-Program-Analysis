@@ -87,7 +87,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
             );
 
         node.append("circle")
-            .attr("r", 5)
+            .attr("r", 7)
             .style("fill", getColour)
 
         node.append("title")
