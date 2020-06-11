@@ -37,7 +37,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
             .append("line")
             .attr("class", "link")
             .attr('marker-end','url(#arrowhead)')
-            .attr("stroke", 'black')
+            .attr("stroke", getColour)
             .attr("stroke-opacity", 0.6)
             .attr("stroke-width", d => Math.sqrt(d.value));
 
