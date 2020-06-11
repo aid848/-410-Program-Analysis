@@ -65,7 +65,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
                 'class': 'edgelabel',
                 'id': function (d, i) {return 'edgelabel' + i},
                 'font-size': 12,
-                'fill': '#aaa'
+                'fill': getColour
             });
 
         edgelabels.append('textPath')
