@@ -138,8 +138,18 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
     function getColour(d) {
         if (d.dependencies >= 10) {
             return "red";
-        } else {
-            return d3.interpolateOrRd(0.35);
+        }
+        if (d.label == "class") {
+            return d3.interpolateYlOrBr(0.5);
+        }
+        if (d.label == "interface") {
+            return  d3.interpolateYlOrBr(0.3);
+        }
+        if (d.label == "abstract") {
+            return d3.interpolateYlOrBr(0.3);
+        }
+         else {
+            return d3.interpolateYlOrBr(0.5);
         }
     }
 
