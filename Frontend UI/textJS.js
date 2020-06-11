@@ -1,4 +1,4 @@
-var colors = d3.scaleOrdinal(d3.schemeCategory10);
+var colors = d3.scaleOrdinal(d3.schemePastel1);
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -18,7 +18,7 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
         .attr('fill', '#999')
-        .style('stroke','none');
+        .style('stroke','#999');
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
@@ -37,6 +37,9 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .append("line")
             .attr("class", "link")
             .attr('marker-end','url(#arrowhead)')
+            .attr("stroke", 'black')
+            .attr("stroke-opacity", 0.6)
+            .attr("stroke-width", d => Math.sqrt(d.value));
 
         link.append("title")
             .text(function (d) {return d.type;});
@@ -47,8 +50,8 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .append('path')
             .attrs({
                 'class': 'edgepath',
-                'fill-opacity': 0,
-                'stroke-opacity': 0,
+                'fill-opacity': 1.5,
+                'stroke-opacity': 0.6,
                 'id': function (d, i) {return 'edgepath' + i}
             })
             .style("pointer-events", "none");
@@ -61,7 +64,7 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .attrs({
                 'class': 'edgelabel',
                 'id': function (d, i) {return 'edgelabel' + i},
-                'font-size': 10,
+                'font-size': 15,
                 'fill': '#aaa'
             });
 
@@ -85,14 +88,14 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
         node.append("circle")
             .attr("r", 5)
-            .style("fill", function (d, i) {return colors(i);})
+            .style("fill", function (d) {return colors(d.group);})
 
         node.append("title")
             .text(function (d) {return d.id;});
 
         node.append("text")
             .attr("dy", -3)
-            .text(function (d) {return d.name+":"+d.label;});
+            .text(function (d) {return d.name+": "+d.label;});
 
         simulation
             .nodes(nodes)
@@ -128,6 +131,10 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
                 return 'rotate(0)';
             }
         });
+    }
+
+    function getColour(d) {
+        return colors(d.group);
     }
 
     function dragstarted(d) {

@@ -17,5 +17,9 @@
     <orderEntry type="library" name="org.apache.bcel:bcel:6.4.1" level="project" />
     <orderEntry type="library" name="org.apache.bcel:bcel:6.5.0" level="project" />
     <orderEntry type="library" name="com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.bcel:bcel:6.0" level="project" />
+    <orderEntry type="library" name="Maven: com.googlecode.json-simple:json-simple:1.1.1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.10" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
   </component>
 </module>
