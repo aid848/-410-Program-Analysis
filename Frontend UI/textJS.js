@@ -1,10 +1,12 @@
-var colors = d3.scaleOrdinal(d3.schemeCategory10);
+var colors = d3.scaleOrdinal(d3.schemePastel1);
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
+        radius = +svg.attr("radius"),
         node,
-        link;
+        link,
+        offsetTick = 20;
 
     svg.append('defs').append('marker')
         .attrs({'id':'arrowhead',
@@ -12,18 +14,19 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             'refX':13,
             'refY':0,
             'orient':'auto',
-            'markerWidth':13,
-            'markerHeight':13,
+            'markerWidth':9,
+            'markerHeight':9,
             'xoverflow':'visible'})
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
         .attr('fill', '#999')
-        .style('stroke','none');
+        .style('stroke','#999');
 
     var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(100).strength(1))
+        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
+
 
     d3.json("graph.json", function (error, graph) {
         if (error) throw error;
@@ -37,6 +40,9 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .append("line")
             .attr("class", "link")
             .attr('marker-end','url(#arrowhead)')
+            .attr("stroke", getColour)
+            .attr("stroke-opacity", 0.6)
+            .attr("stroke-width", d => Math.sqrt(d.value));
 
         link.append("title")
             .text(function (d) {return d.type;});
@@ -47,8 +53,8 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .append('path')
             .attrs({
                 'class': 'edgepath',
-                'fill-opacity': 0,
-                'stroke-opacity': 0,
+                'fill-opacity': 1.5,
+                'stroke-opacity': 0.6,
                 'id': function (d, i) {return 'edgepath' + i}
             })
             .style("pointer-events", "none");
@@ -61,8 +67,8 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             .attrs({
                 'class': 'edgelabel',
                 'id': function (d, i) {return 'edgelabel' + i},
-                'font-size': 10,
-                'fill': '#aaa'
+                'font-size': 12,
+                'fill': getColour
             });
 
         edgelabels.append('textPath')
@@ -84,15 +90,17 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
             );
 
         node.append("circle")
-            .attr("r", 5)
-            .style("fill", function (d, i) {return colors(i);})
+            .attr("r", 7)
+            .style("fill", getColour)
 
         node.append("title")
             .text(function (d) {return d.id;});
 
         node.append("text")
             .attr("dy", -3)
-            .text(function (d) {return d.name+":"+d.label;});
+            .text(function (d) {return d.name+": "+d.label;})
+            .style('fill', getTextColour)
+            .attr('font-size', 15);
 
         simulation
             .nodes(nodes)
@@ -100,20 +108,42 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
         simulation.force("link")
             .links(links);
+
+
     }
 
     function ticked() {
-        link
-            .attr("x1", function (d) {return d.source.x;})
-            .attr("y1", function (d) {return d.source.y;})
-            .attr("x2", function (d) {return d.target.x;})
-            .attr("y2", function (d) {return d.target.y;});
+
+
 
         node
-            .attr("transform", function (d) {return "translate(" + d.x + ", " + d.y + ")";});
+            .attr("transform", function (d) {return "translate(" +
+            Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.x)) + ", " +
+            Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.y)) + ")";});
+
+         link
+                    .attr("x1", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x));})
+                    .attr("y1", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y));})
+                    .attr("x2", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x));})
+                    .attr("y2", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));});
+
+//        link
+//            .attr("x1", function (d) {return d.source.x;})
+//            .attr("y1", function (d) {return d.source.y;})
+//            .attr("x2", function (d) {return d.target.x;})
+//            .attr("y2", function (d) {return d.target.y;});
+
+
 
         edgepaths.attr('d', function (d) {
-            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+            return 'M ' +
+             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x)) +
+            ' ' +
+             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y)) +
+              ' L ' +
+             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x)) +
+               ' ' +
+             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));
         });
 
         edgelabels.attr('transform', function (d) {
@@ -128,6 +158,33 @@ var colors = d3.scaleOrdinal(d3.schemeCategory10);
                 return 'rotate(0)';
             }
         });
+
+    }
+
+    function getColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        }
+        if (d.label == "class") {
+            return d3.interpolateYlOrBr(0.5);
+        }
+        if (d.label == "interface") {
+            return  d3.interpolateYlOrBr(0.3);
+        }
+        if (d.label == "abstract") {
+            return d3.interpolateYlOrBr(0.3);
+        }
+         else {
+            return d3.interpolateYlOrBr(0.5);
+        }
+    }
+
+    function getTextColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        } else {
+            return "black";
+        }
     }
 
     function dragstarted(d) {
