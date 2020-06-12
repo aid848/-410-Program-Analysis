@@ -232,6 +232,32 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         }
     }
 
+    function getColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        }
+        if (d.label == "class") {
+            return d3.interpolateYlOrBr(0.5);
+        }
+        if (d.label == "interface") {
+            return  d3.interpolateYlOrBr(0.3);
+        }
+        if (d.label == "abstract") {
+            return d3.interpolateYlOrBr(0.3);
+        }
+         else {
+            return d3.interpolateYlOrBr(0.5);
+        }
+    }
+
+    function getTextColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        } else {
+            return "black";
+        }
+    }
+
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart()
         d.fx = d.x;
