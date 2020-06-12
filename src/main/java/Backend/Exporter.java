@@ -181,7 +181,7 @@ public class Exporter {
                     for (InterfaceObj in : tup.value.interfaces) {
                         if (in != null) {
                             if (ids.get(in.name) != null) {
-                                writeLink(links, tup.id, ids.get(in.name), "interface");
+                                writeLink(links, tup.id, ids.get(in.name), "implements");
                             }
                         }
                     }
@@ -190,7 +190,7 @@ public class Exporter {
                 if (tup.value.superClass != null) {
                     // todo what about recursive inheritance?
                     if (ids.get(tup.value.superClass.name) != null) {
-                        writeLink(links, tup.id, ids.get(tup.value.superClass.name), "super class");
+                        writeLink(links, tup.id, ids.get(tup.value.superClass.name), "extends");
                     }
                 }
                 // static call dependencies
