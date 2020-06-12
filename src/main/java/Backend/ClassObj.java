@@ -14,6 +14,7 @@ public class ClassObj {
     List<String> methods = new ArrayList<>();;
     ClassObj superClass;
     List<InterfaceObj> interfaces = new ArrayList<>();
+    List<ClassObj> staticCalls = new ArrayList<>(); // todo
 
     public ClassObj(String name, List<String> fields, List<String> methods, String superclass, String[] interfaces) {
         this.name = name;

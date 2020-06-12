@@ -43,9 +43,7 @@ public class Main {
 //                entry.getValue().print();
 //            }
 //        });
-        // *** test
-        abstractClasses.put("what.is.this", new ClassObj("cool"));
-        // *** end test
+
         Exporter ex = new Exporter(interfaces,classes, abstractClasses);
         ex.writeToJson();
 //        String os = System.getProperty("os.name").toLowerCase();

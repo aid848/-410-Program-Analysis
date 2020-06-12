@@ -193,6 +193,16 @@ public class Exporter {
                         writeLink(links, tup.id, ids.get(tup.value.superClass.name), "super class");
                     }
                 }
+                // static call dependencies
+                if (tup.value.staticCalls != null) {
+                    for(ClassObj c: tup.value.staticCalls) {
+                        try {
+                            writeLink(links,tup.id,ids.get(c.name), "static call");
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -200,6 +210,9 @@ public class Exporter {
     }
 
     private void writeLink(JSONArray links, int src, int dest, String type) {
+        if(src == dest) {
+            return;
+        }
 
         if(allowed.containsKey(src) && allowed.containsKey(dest)) {
             JSONObject ob = new JSONObject();
