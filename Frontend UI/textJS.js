@@ -3,8 +3,10 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
+        radius = +svg.attr("radius"),
         node,
-        link;
+        link,
+        offsetTick = 20;
 
     svg.append('defs').append('marker')
         .attrs({'id':'arrowhead',
@@ -21,9 +23,10 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         .style('stroke','#999');
 
     var simulation = d3.forceSimulation()
-        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.1))
+        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
+
 
     d3.json("graph.json", function (error, graph) {
         if (error) throw error;
@@ -104,21 +107,43 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
             .on("tick", ticked);
 
         simulation.force("link")
-            .links(links)
+            .links(links);
+
+
     }
 
     function ticked() {
-        link
-            .attr("x1", function (d) {return d.source.x;})
-            .attr("y1", function (d) {return d.source.y;})
-            .attr("x2", function (d) {return d.target.x;})
-            .attr("y2", function (d) {return d.target.y;});
+
+
 
         node
-            .attr("transform", function (d) {return "translate(" + d.x + ", " + d.y + ")";});
+            .attr("transform", function (d) {return "translate(" +
+            Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.x)) + ", " +
+            Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.y)) + ")";});
+
+         link
+                    .attr("x1", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x));})
+                    .attr("y1", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y));})
+                    .attr("x2", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x));})
+                    .attr("y2", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));});
+
+//        link
+//            .attr("x1", function (d) {return d.source.x;})
+//            .attr("y1", function (d) {return d.source.y;})
+//            .attr("x2", function (d) {return d.target.x;})
+//            .attr("y2", function (d) {return d.target.y;});
+
+
 
         edgepaths.attr('d', function (d) {
-            return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y;
+            return 'M ' +
+             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x)) +
+            ' ' +
+             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y)) +
+              ' L ' +
+             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x)) +
+               ' ' +
+             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));
         });
 
         edgelabels.attr('transform', function (d) {
@@ -133,6 +158,33 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
                 return 'rotate(0)';
             }
         });
+
+    }
+
+    function getColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        }
+        if (d.label == "class") {
+            return d3.interpolateYlOrBr(0.5);
+        }
+        if (d.label == "interface") {
+            return  d3.interpolateYlOrBr(0.3);
+        }
+        if (d.label == "abstract") {
+            return d3.interpolateYlOrBr(0.3);
+        }
+         else {
+            return d3.interpolateYlOrBr(0.5);
+        }
+    }
+
+    function getTextColour(d) {
+        if (d.dependencies >= 10) {
+            return "red";
+        } else {
+            return "black";
+        }
     }
 
     function getColour(d) {
