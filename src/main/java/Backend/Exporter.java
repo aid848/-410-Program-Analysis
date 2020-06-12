@@ -17,6 +17,7 @@ public class Exporter {
     private Hashtable<String, Integer> ids;
     private int count;
     private Map<Integer, Boolean> allowed;
+    private Map<Integer, Integer> occurences;
     // TODO check sources and target fields for existance in the written nodes
 
     public Exporter(Map<String, InterfaceObj> interfaces, Map<String, ClassObj> classes) {
@@ -25,11 +26,14 @@ public class Exporter {
         this.classes = new ArrayList<>();
         allowed = new HashMap<>();
         ids = new Hashtable<>();
+        occurences = new HashMap<>();
         count = 1;
 
         for (Map.Entry<String, InterfaceObj> entry: interfaces.entrySet()) {
             try {
                 this.interfaces.add(new Tuple(entry.getKey(), entry.getValue()));
+                String k = entry.getKey();
+                occurences.put(ids.get(k), 0);
             } catch (Exception b) {
                 b.printStackTrace();
             }
@@ -39,10 +43,13 @@ public class Exporter {
             try {
                 this.classes.add(new Tuple(entry.getKey(), entry.getValue()));
 //                idx++;
+                String k = entry.getKey();
+                occurences.put(ids.get(k), 0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     public void writeToJson() {
@@ -78,7 +85,10 @@ public class Exporter {
         JSONArray nodes = new JSONArray();
         JSONArray links = new JSONArray();
         writeNodes(nodes);
+        getDependencies(interfaces);
+        getDependencies(classes);
         writeLinks(links);
+        writeDependencies(nodes);
 
 
         outer.put("nodes", nodes);
@@ -93,7 +103,49 @@ public class Exporter {
         FileWriter defaultForVisualWriter = new FileWriter(output);
         outer.writeJSONString(defaultForVisualWriter);
         defaultForVisualWriter.close();
+    }
 
+    private void writeDependencies(JSONArray nodes) {
+        for (int i = 0; i < nodes.size(); i++) {
+            JSONObject n = (JSONObject) nodes.get(i);
+            n.put("dependencies", occurences.get(n.get("id")));
+        }
+    }
+
+    private void getDependencies(List<Tuple> t) {
+        for (Tuple tup: t) {
+            try {
+                if (tup.value.temp != null) {
+                    for (String s : tup.value.temp) {
+                        if(allowed.containsKey(tup.id) && allowed.containsKey(ids.get(s))) {
+                            int i = occurences.get(tup.id);
+                            i += 1;
+                            occurences.put(tup.id, i);
+                        }
+                    }
+                }
+                if (tup.value.interfaces != null) {
+                    for (InterfaceObj in : tup.value.interfaces) {
+                        if (in != null) {
+                            if(allowed.containsKey(tup.id) || allowed.containsKey(ids.get(in.name))) {
+                                int i = occurences.get(tup.id);
+                                i += 1;
+                                occurences.put(tup.id, i);
+                            }
+                        }
+                    }
+                }
+                if (tup.value.superClass != null) {
+                    if(allowed.containsKey(tup.id) || allowed.containsKey(ids.get(tup.value.superClass.name))) {
+                        int i = occurences.get(tup.id);
+                        i += 1;
+                        occurences.put(tup.id, i);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void writeLinks(JSONArray links) {
@@ -106,21 +158,27 @@ public class Exporter {
             try {
                 if (tup.value.temp != null) {
                     for (String s : tup.value.temp) {
-                        writeLink(links, tup.id, ids.get(s), "field");
+                        if (ids.get(s) != null) {
+                            writeLink(links, tup.id, ids.get(s), "field");
+                        }
                     }
                 }
-                if (tup.value.interfaces != null) {
+                if (tup.value.interfaces.size() != 0) {
                     for (InterfaceObj in : tup.value.interfaces) {
                         if (in != null) {
-                            writeLink(links, tup.id, ids.get(in.name), "interface");
+                            if (ids.get(in.name) != null) {
+                                writeLink(links, tup.id, ids.get(in.name), "interface");
+                            }
                         }
                     }
                 }
                 if (tup.value.superClass != null) {
                     // todo what about recursive inheritance?
-                    writeLink(links, tup.id, ids.get(tup.value.superClass.name), "super class");
+                    if (ids.get(tup.value.superClass.name) != null) {
+                        writeLink(links, tup.id, ids.get(tup.value.superClass.name), "super class");
+                    }
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -128,15 +186,13 @@ public class Exporter {
 
     private void writeLink(JSONArray links, int src, int dest, String type) {
 
-        if(!allowed.containsKey(src) || !allowed.containsKey(dest)) {
-            return;
+        if(allowed.containsKey(src) && allowed.containsKey(dest)) {
+            JSONObject ob = new JSONObject();
+            ob.put("source", src);
+            ob.put("target", dest);
+            ob.put("type", type);
+            links.add(ob);
         }
-        JSONObject ob = new JSONObject();
-        ob.put("source", src);
-        ob.put("target", dest);
-        ob.put("type", type);
-        System.out.println(ob);
-        links.add(ob);
     }
 
     private void writeNodes(JSONArray nodes) {
@@ -146,6 +202,7 @@ public class Exporter {
                 ob.put("name", t.value.name);
                 ob.put("label", "interface");
                 ob.put("id", t.id);
+                ob.put("dependencies", occurences.get(ids.get(t.key)));
                 nodes.add(ob);
                 allowed.put(t.id, true);
             } catch (Exception e) {
@@ -158,6 +215,7 @@ public class Exporter {
                 ob.put("name", t.value.name);
                 ob.put("label", "class");
                 ob.put("id", t.id);
+                ob.put("dependencies", occurences.get(ids.get(t.key)));
                 nodes.add(ob);
                 allowed.put(t.id, true);
             } catch (Exception e) {
