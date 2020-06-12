@@ -2,7 +2,7 @@ var colors = d3.scaleOrdinal(d3.schemePaired);
 var green = "#59a14f"
 var lightBlue = "#a6cee3"
 var darkBlue = "#4e79a7"
-var extendCol = "#b3de69"
+var extendCol = "#1b9e77"
 var implementCol = "#bebada"
 var fieldCol = "#8dd3c7"
 
@@ -138,14 +138,14 @@ var fieldCol = "#8dd3c7"
 
         node.append("circle")
             .attr("r", 7)
-            .style("fill", getColour)
+            .style("fill", getNodeColour)
 
         node.append("title")
             .text(function (d) {return d.id;});
 
         node.append("text")
             .attr("dy", -3)
-            .text(function (d) {return d.name+": "+d.label;})
+            .text(function (d) {return d.name;})
             .style('fill', getTextColour)
             .attr('font-size', 15);
 
@@ -228,7 +228,7 @@ var fieldCol = "#8dd3c7"
         }
     }
 
-    function getColour(d) {
+    function getNodeColour(d) {
         if (d.dependencies >= 10) {
             return "red";
         }
