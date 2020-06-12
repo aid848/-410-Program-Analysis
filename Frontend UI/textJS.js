@@ -1,4 +1,10 @@
-var colors = d3.scaleOrdinal(d3.schemePastel1);
+var colors = d3.scaleOrdinal(d3.schemePaired);
+var green = "#59a14f"
+var lightBlue = "#a6cee3"
+var darkBlue = "#4e79a7"
+var extendCol = "#b3de69"
+var implementCol = "#bebada"
+var fieldCol = "#8dd3c7"
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -9,18 +15,47 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         offsetTick = 20;
 
     svg.append('defs').append('marker')
-        .attrs({'id':'arrowhead',
+        .attrs({'id':'fieldArrowhead',
             'viewBox':'-0 -5 10 10',
-            'refX':13,
-            'refY':0,
+            'refX':17,
+            'refY':-1.5,
             'orient':'auto',
-            'markerWidth':9,
-            'markerHeight':9,
+            'markerWidth':5,
+            'markerHeight':5,
             'xoverflow':'visible'})
         .append('svg:path')
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
-        .attr('fill', '#999')
-        .style('stroke','#999');
+        .attr('fill', fieldCol)
+        .style('stroke',fieldCol);
+
+    svg.append('defs').append('marker')
+            .attrs({'id':'implementArrowhead',
+                'viewBox':'-0 -5 10 10',
+                'refX':17,
+                'refY':-1.5,
+                'orient':'auto',
+                'markerWidth':5,
+                'markerHeight':5,
+                'xoverflow':'visible'})
+            .append('svg:path')
+            .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+            .attr('fill', implementCol)
+            .style('stroke',implementCol);
+
+     svg.append('defs').append('marker')
+             .attrs({'id':'extendArrowhead',
+                 'viewBox':'-0 -5 10 10',
+                 'refX':17,
+                 'refY':-1.5,
+                 'orient':'auto',
+                 'markerWidth':5,
+                 'markerHeight':5,
+                 'xoverflow':'visible'})
+             .append('svg:path')
+             .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+             .attr('fill', extendCol)
+             .style('stroke',extendCol);
+
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
@@ -33,16 +68,28 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         update(graph.links, graph.nodes);
     })
 
+    function getArrow(d) {
+        if (d.type == "implements") {
+            return 'url(#implementArrowhead)'
+        }
+        if (d.type == "extends") {
+            return 'url(#extendArrowhead)'
+        }
+        if (d.type == "field") {
+            return 'url(#fieldArrowhead)'
+        }
+    }
+
     function update(links, nodes) {
         link = svg.selectAll(".link")
             .data(links)
             .enter()
             .append("line")
             .attr("class", "link")
-            .attr('marker-end','url(#arrowhead)')
-            .attr("stroke", getColour)
+            .attr('marker-end', getArrow)
+            .attr("stroke", getLineColour)
             .attr("stroke-opacity", 0.6)
-            .attr("stroke-width", d => Math.sqrt(d.value));
+            .attr("stroke-width", 1.5);
 
         link.append("title")
             .text(function (d) {return d.type;});
@@ -68,7 +115,7 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
                 'class': 'edgelabel',
                 'id': function (d, i) {return 'edgelabel' + i},
                 'font-size': 12,
-                'fill': getColour
+                'fill': getLineColour
             });
 
         edgelabels.append('textPath')
@@ -161,24 +208,6 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
 
     }
 
-    function getColour(d) {
-        if (d.dependencies >= 10) {
-            return "red";
-        }
-        if (d.label == "class") {
-            return d3.interpolateYlOrBr(0.5);
-        }
-        if (d.label == "interface") {
-            return  d3.interpolateYlOrBr(0.3);
-        }
-        if (d.label == "abstract") {
-            return d3.interpolateYlOrBr(0.3);
-        }
-         else {
-            return d3.interpolateYlOrBr(0.5);
-        }
-    }
-
     function getTextColour(d) {
         if (d.dependencies >= 10) {
             return "red";
@@ -187,29 +216,33 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         }
     }
 
+    function getLineColour(d) {
+        if (d.type == "extends") {
+            return extendCol;
+        }
+        if (d.type == "field") {
+            return fieldCol;
+        }
+        if (d.type == "implements") {
+            return implementCol;
+        }
+    }
+
     function getColour(d) {
         if (d.dependencies >= 10) {
             return "red";
         }
         if (d.label == "class") {
-            return d3.interpolateYlOrBr(0.5);
+            return green;
         }
         if (d.label == "interface") {
-            return  d3.interpolateYlOrBr(0.3);
+            return  lightBlue;
         }
         if (d.label == "abstract") {
-            return d3.interpolateYlOrBr(0.3);
+            return darkBlue;
         }
          else {
-            return d3.interpolateYlOrBr(0.5);
-        }
-    }
-
-    function getTextColour(d) {
-        if (d.dependencies >= 10) {
-            return "red";
-        } else {
-            return "black";
+            return green;
         }
     }
 
@@ -223,6 +256,19 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         d.fx = d3.event.x;
         d.fy = d3.event.y;
     }
+
+
+// Legend adapted from:
+// https://www.d3-graph-gallery.com/graph/custom_legend.html#cat2
+
+var svg2 = d3.select("#my_dataviz2")
+
+svg2.append("circle").attr("cx",100).attr("cy",130).attr("r", 6).style("fill", green)
+svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", lightBlue)
+svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", darkBlue)
+svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").attr("alignment-baseline","middle")
 
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
