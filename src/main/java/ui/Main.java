@@ -14,6 +14,7 @@ import Backend.*;
 public class Main {
     public static Map<String, InterfaceObj> interfaces = new HashMap<>();
     public static Map<String, ClassObj> classes = new HashMap<>();
+    public static Map<String, ClassObj> abstractClasses = new HashMap<>(); // todo parser needs to modify this
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         Parser p = new Parser();
@@ -42,8 +43,10 @@ public class Main {
 //                entry.getValue().print();
 //            }
 //        });
-
-        Exporter ex = new Exporter(interfaces,classes);
+        // *** test
+        abstractClasses.put("what.is.this", new ClassObj("cool"));
+        // *** end test
+        Exporter ex = new Exporter(interfaces,classes, abstractClasses);
         ex.writeToJson();
 //        String os = System.getProperty("os.name").toLowerCase();
 //        if(os.contains("win")) {

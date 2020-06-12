@@ -14,16 +14,18 @@ public class Exporter {
 
     public List<Tuple> interfaces;
     public List<Tuple> classes;
+    private List<Tuple> abstractClasses;
     private Hashtable<String, Integer> ids;
     private int count;
     private Map<Integer, Boolean> allowed;
     private Map<Integer, Integer> occurences;
     // TODO check sources and target fields for existance in the written nodes
 
-    public Exporter(Map<String, InterfaceObj> interfaces, Map<String, ClassObj> classes) {
+    public Exporter(Map<String, InterfaceObj> interfaces, Map<String, ClassObj> classes, Map<String, ClassObj> absClasses) {
 
         this.interfaces = new ArrayList<>();
         this.classes = new ArrayList<>();
+        this.abstractClasses = new ArrayList<>();
         allowed = new HashMap<>();
         ids = new Hashtable<>();
         occurences = new HashMap<>();
@@ -42,10 +44,18 @@ public class Exporter {
         for(Map.Entry<String, ClassObj> entry: classes.entrySet()){
             try {
                 this.classes.add(new Tuple(entry.getKey(), entry.getValue()));
-//                idx++;
                 String k = entry.getKey();
                 occurences.put(ids.get(k), 0);
             } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        for(Map.Entry<String, ClassObj> entry: absClasses.entrySet()) {
+            try {
+                this.abstractClasses.add(new Tuple(entry.getKey(), entry.getValue()));
+                occurences.put(ids.get(entry.getKey()), 0);
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -87,6 +97,7 @@ public class Exporter {
         writeNodes(nodes);
         getDependencies(interfaces);
         getDependencies(classes);
+        getDependencies(abstractClasses);
         writeLinks(links);
         writeDependencies(nodes);
 
@@ -151,11 +162,13 @@ public class Exporter {
     private void writeLinks(JSONArray links) {
         writeLinksHelper(links, interfaces);
         writeLinksHelper(links, classes);
+        writeLinksHelper(links, abstractClasses);
     }
 
     private void writeLinksHelper(JSONArray links, List<Tuple> t) {
         for(Tuple tup: t) {
             try {
+                // field dependencies
                 if (tup.value.temp != null) {
                     for (String s : tup.value.temp) {
                         if (ids.get(s) != null) {
@@ -163,6 +176,7 @@ public class Exporter {
                         }
                     }
                 }
+                // interface dependencies
                 if (tup.value.interfaces.size() != 0) {
                     for (InterfaceObj in : tup.value.interfaces) {
                         if (in != null) {
@@ -172,6 +186,7 @@ public class Exporter {
                         }
                     }
                 }
+                // superclass dependencies
                 if (tup.value.superClass != null) {
                     // todo what about recursive inheritance?
                     if (ids.get(tup.value.superClass.name) != null) {
@@ -195,25 +210,21 @@ public class Exporter {
         }
     }
 
-    private void writeNodes(JSONArray nodes) {
-        for(Tuple t: interfaces) {
+    private void writeNodes(JSONArray nodes) { // todo refactor to method
+        // writing interface nodes
+        nodeWriterHelper(nodes,interfaces,"interface");
+        // writing classes nodes
+        nodeWriterHelper(nodes,classes,"class");
+        // writing abstract class nodes
+        nodeWriterHelper(nodes,abstractClasses,"abstract class");
+    }
+
+    private void nodeWriterHelper(JSONArray nodes,List<Tuple> collection,String type) {
+        for(Tuple t: collection) {
             try {
                 JSONObject ob = new JSONObject();
                 ob.put("name", t.value.name);
-                ob.put("label", "interface");
-                ob.put("id", t.id);
-                ob.put("dependencies", occurences.get(ids.get(t.key)));
-                nodes.add(ob);
-                allowed.put(t.id, true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        for(Tuple t: classes) {
-            try {
-                JSONObject ob = new JSONObject();
-                ob.put("name", t.value.name);
-                ob.put("label", "class");
+                ob.put("label", type);
                 ob.put("id", t.id);
                 ob.put("dependencies", occurences.get(ids.get(t.key)));
                 nodes.add(ob);
