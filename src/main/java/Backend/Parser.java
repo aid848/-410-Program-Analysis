@@ -45,13 +45,10 @@ public class Parser {
     }
 
     private void parseClass(JavaClass c) {
-        if (Main.classes.containsKey(c.getClassName())) {
-            return;
-        }
         ClassObj classObj = null;
         InterfaceObj interfaceObj = null;
         List<String> methods = new ArrayList<>();
-        List<String> fields = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
         for (Method method: c.getMethods()) {
             methods.add(method.getName());
         }
@@ -61,7 +58,7 @@ public class Parser {
             }
         }
         for (Field f: c.getFields()) {
-            fields.add(f.getType().toString());
+            fields.add(f);
         }
         if (c.isInterface()) {
             interfaceObj = new InterfaceObj(c.getClassName(), fields, methods, null, c.getInterfaceNames());
@@ -70,9 +67,19 @@ public class Parser {
             if (!c.getSuperclassName().equals("java.lang.Object") && !Main.classes.containsKey(c.getSuperclassName())) {
                 Main.classes.put(c.getSuperclassName(), new ClassObj(c.getSuperclassName()));
             }
-
-            classObj = new ClassObj(c.getClassName(), fields, methods, c.getSuperclassName(), c.getInterfaceNames());
-            Main.classes.put(classObj.getName(), classObj);
+            if (c.isAbstract()) {
+                classObj = new ClassObj(c.getClassName(), fields, methods, c.getSuperclassName(), c.getInterfaceNames());
+                if (Main.classes.containsKey(c.getClassName())) {
+                    Main.classes.put(c.getClassName(), classObj);
+                    Main.abstractClasses.put(classObj.getName(), Main.classes.get(c.getClassName()));
+                    Main.classes.remove(c.getClassName());
+                } else {
+                    Main.abstractClasses.put(classObj.getName(), classObj);
+                }
+            } else {
+                classObj = new ClassObj(c.getClassName(), fields, methods, c.getSuperclassName(), c.getInterfaceNames());
+                Main.classes.put(classObj.getName(), classObj);
+            }
         }
     }
 
@@ -84,6 +91,12 @@ public class Parser {
         });
 
         Main.interfaces.entrySet().forEach(entry->{
+            if (entry.getValue() != null) {
+                entry.getValue().setFields();
+            }
+        });
+
+        Main.abstractClasses.entrySet().forEach(entry->{
             if (entry.getValue() != null) {
                 entry.getValue().setFields();
             }

@@ -14,6 +14,7 @@ import Backend.*;
 public class Main {
     public static Map<String, InterfaceObj> interfaces = new HashMap<>();
     public static Map<String, ClassObj> classes = new HashMap<>();
+    public static Map<String, ClassObj> abstractClasses = new HashMap<>();
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         Parser p = new Parser();
@@ -28,7 +29,7 @@ public class Main {
         } else {
             System.out.println("no file chosen");
         }
-       p.parseFields();
+        p.parseFields();
 
 //        interfaces.entrySet().forEach(entry->{
 //            System.out.println(entry.getKey());
@@ -42,6 +43,13 @@ public class Main {
 //                entry.getValue().print();
 //            }
 //        });
+//
+//        abstractClasses.entrySet().forEach(entry->{
+//            System.out.println("Abstract class");
+//            System.out.println(entry.getKey());
+//            entry.getValue().print();
+//        });
+
 
         Exporter ex = new Exporter(interfaces,classes);
         ex.writeToJson();
