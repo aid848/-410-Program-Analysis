@@ -60,7 +60,27 @@ var fieldCol = "#8dd3c7"
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
         .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force('collide', d3.forceCollide(function(d){
+            return d.id === "j" ? 100 : 50
+        }));
+//        .force("x", d3.forceX().strength(0.3))
+//        .force("y", d3.forceY().strength(0.3));
+
+//    var force = d3.layout.force()
+//        .size([width, height])
+//        .charge(0)
+//        .gravity(0)
+//        .linkStrength(0)
+//        .friction(0);
+
+//        .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
+//        .force("charge", d3.forceManyBody())
+//        .force("center", d3.forceCenter(width / 2, height / 2))
+//        .force("collision", d3.forceCollide().radius(function(d) {
+//            return d.radius
+//          }))
+//          .on('tick', ticked);
 
 
     d3.json("graph.json", function (error, graph) {
@@ -161,8 +181,6 @@ var fieldCol = "#8dd3c7"
 
     function ticked() {
 
-
-
         node
             .attr("transform", function (d) {return "translate(" +
             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.x)) + ", " +
@@ -205,6 +223,11 @@ var fieldCol = "#8dd3c7"
                 return 'rotate(0)';
             }
         });
+//        simulation.force.stop();
+
+//        simulation.velocityDecay(0.95);
+//        simulation.alphaDecay(.1);
+//        simulation.velocityDecay(0.8);
 
     }
 
@@ -272,6 +295,6 @@ svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("
 
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
-//        d.fx = undefined;
-//        d.fy = undefined;
+////        d.fx = undefined;
+////        d.fy = undefined;
 //    }
