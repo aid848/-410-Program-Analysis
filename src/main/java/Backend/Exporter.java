@@ -171,7 +171,7 @@ public class Exporter {
                 // field dependencies
                 if (tup.value.fields != null) {
                     for (Map.Entry<ClassObj, Integer> s : tup.value.fields.entrySet()) {
-                        if (ids.get(s) != null) {
+                        if (ids.get(s.getKey().name) != null) {
                             writeLink(links, tup.id, ids.get(s.getKey().name), "field");
                         }
                     }
