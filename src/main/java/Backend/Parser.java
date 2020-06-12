@@ -48,6 +48,9 @@ public class Parser {
         if (Main.classes.containsKey(c.getClassName())) {
             return;
         }
+//        if(c.getClassName().contains("Tokenizer")){
+//            System.out.println("e");
+//        }
         ClassObj classObj = null;
         InterfaceObj interfaceObj = null;
         List<String> methods = new ArrayList<>();

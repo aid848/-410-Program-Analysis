@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ClassObj {
     String name;
-    List<String> temp = new ArrayList<>();
+    private List<String> temp = new ArrayList<>();
     Map<ClassObj, Integer> fields = new HashMap<>();
     List<String> methods = new ArrayList<>();;
     ClassObj superClass;

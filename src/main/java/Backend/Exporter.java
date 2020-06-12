@@ -126,9 +126,9 @@ public class Exporter {
     private void getDependencies(List<Tuple> t) {
         for (Tuple tup: t) {
             try {
-                if (tup.value.temp != null) {
-                    for (String s : tup.value.temp) {
-                        if(allowed.containsKey(tup.id) && allowed.containsKey(ids.get(s))) {
+                if (tup.value.fields != null) {
+                    for (Map.Entry<ClassObj, Integer> s : tup.value.fields.entrySet()) {
+                        if(allowed.containsKey(tup.id) && allowed.containsKey(ids.get(s.getKey().name))) {
                             int i = occurences.get(tup.id);
                             i += 1;
                             occurences.put(tup.id, i);
@@ -169,10 +169,10 @@ public class Exporter {
         for(Tuple tup: t) {
             try {
                 // field dependencies
-                if (tup.value.temp != null) {
-                    for (String s : tup.value.temp) {
+                if (tup.value.fields != null) {
+                    for (Map.Entry<ClassObj, Integer> s : tup.value.fields.entrySet()) {
                         if (ids.get(s) != null) {
-                            writeLink(links, tup.id, ids.get(s), "field");
+                            writeLink(links, tup.id, ids.get(s.getKey().name), "field");
                         }
                     }
                 }
