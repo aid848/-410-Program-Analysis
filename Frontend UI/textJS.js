@@ -22,13 +22,19 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
         .attr('fill', '#999')
         .style('stroke','#999');
 
+    // this is to keep the nodes closer to the middle
+    var forceX = d3.forceX(width / 2).strength(0.05)
+    var forceY = d3.forceY(height / 2).strength(0.05)
+
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().id(function (d) {return d.id;}).distance(120).strength(0.5))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2))
         .force('collide', d3.forceCollide(function(d){
             return d.id === "j" ? 100 : 50
-        }));
+        }))
+        .force('x', forceX)
+        .force('y',  forceY);
 //        .force("x", d3.forceX().strength(0.3))
 //        .force("y", d3.forceY().strength(0.3));
 
@@ -135,15 +141,18 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
     function ticked() {
 
         node
-            .attr("transform", function (d) {return "translate(" +
-            Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.x)) + ", " +
-            Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.y)) + ")";});
+            .attr("transform", function (d) {
+            d.x = Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.x));
+            d.y = Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.y));
+            return "translate(" +
+             d.x + ", " +
+             d.y + ")";});
 
          link
-                    .attr("x1", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x));})
-                    .attr("y1", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y));})
-                    .attr("x2", function (d) {return Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x));})
-                    .attr("y2", function (d) {return Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));});
+                    .attr("x1", function (d) {return d.source.x = Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x));})
+                    .attr("y1", function (d) {return d.source.y = Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y));})
+                    .attr("x2", function (d) {return d.target.x = Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x));})
+                    .attr("y2", function (d) {return d.target.y = Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));});
 
 //        link
 //            .attr("x1", function (d) {return d.source.x;})
@@ -151,34 +160,47 @@ var colors = d3.scaleOrdinal(d3.schemePastel1);
 //            .attr("x2", function (d) {return d.target.x;})
 //            .attr("y2", function (d) {return d.target.y;});
 
-
+// edgepaths.attr('d', function (d) {
+//            return 'M ' +
+//             d.source.x +
+//            ' ' +
+//              d.source.y +
+//              ' L ' +
+//             d.target.x +
+//               ' ' +
+//             d.target.y;
+//        });
 
         edgepaths.attr('d', function (d) {
-            return 'M ' +
-             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x)) +
+        d.source.x =  Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.source.x));
+        d.source.y = Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y));
+        d.target.x = Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x));
+        d.target.y = Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));
+        return 'M ' +
+            d.source.x +
             ' ' +
-             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.source.y)) +
-              ' L ' +
-             Math.max(radius + offsetTick, Math.min(width - radius - offsetTick, d.target.x)) +
-               ' ' +
-             Math.max(radius + offsetTick, Math.min(height - radius - offsetTick, d.target.y));
+            d.source.y +
+            ' L ' +
+            d.target.x +
+            ' ' +
+            d.target.y;
         });
 
-        edgelabels.attr('transform', function (d) {
-            if (d.target.x < d.source.x) {
-                var bbox = this.getBBox();
-
-                rx = bbox.x + bbox.width / 2;
-                ry = bbox.y + bbox.height / 2;
-                return 'rotate(180 ' + rx + ' ' + ry + ')';
-            }
-            else {
-                return 'rotate(0)';
-            }
-        });
+//        edgelabels.attr('transform', function (d) {
+//            if (d.target.x < d.source.x) {
+//                var bbox = this.getBBox();
+//
+//                rx = bbox.x + bbox.width / 2;
+//                ry = bbox.y + bbox.height / 2;
+//                return 'rotate(180 ' + rx + ' ' + ry + ')';
+//            }
+//            else {
+//                return 'rotate(0)';
+//            }
+//        });
 //        simulation.force.stop();
 
-//        simulation.velocityDecay(0.95);
+        simulation.velocityDecay(0.5);
 //        simulation.alphaDecay(.1);
 //        simulation.velocityDecay(0.8);
 
