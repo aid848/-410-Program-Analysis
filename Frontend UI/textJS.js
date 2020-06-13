@@ -342,14 +342,11 @@ svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", i
 svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", abstractNode)
 svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "beige").style("stroke", largeClass).style("stroke-width", 3)
 svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "beige").style("stroke", manyDependencies).style("stroke-width", 3)
-svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "beige").style("stroke", "#ae3cb2").style("stroke-width", 3)
 svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 220).text("Large Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 250).text("Many dependencies").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 280).text("No dependencies").style("fill", "black").style("font-size", "14px").attr("alignment-baseline","middle")
-
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
 ////        d.fx = undefined;
