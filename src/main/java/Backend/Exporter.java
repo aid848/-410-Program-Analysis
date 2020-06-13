@@ -240,6 +240,7 @@ public class Exporter {
                 ob.put("label", type);
                 ob.put("id", t.id);
                 ob.put("dependencies", occurences.get(ids.get(t.key)));
+                ob.put("numMethods", t.value.methods.size());
                 nodes.add(ob);
                 allowed.put(t.id, true);
             } catch (Exception e) {

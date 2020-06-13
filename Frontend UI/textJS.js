@@ -3,8 +3,9 @@ var green = "#59a14f"
 var lightBlue =  "#17becf"
 var darkBlue = "#1f78b4"
 var extendCol = "#1b9e77"
-var implementCol = "#6a3d9a"
+var implementCol = "#feac3b"
 var fieldCol = "#1f78b4"
+var somecolour = "#fee697"
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -283,6 +284,9 @@ var fieldCol = "#1f78b4"
         if (d.dependencies == 0 && d.label != "interface") {
             return "#ae3cb2"
             }
+        if (d.numMethods >= 3) {
+            return somecolour;
+        }
         else {
             return getNodeColour
         }
@@ -326,12 +330,14 @@ svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", d
 svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "white").style("stroke", "red").style("stroke-width", 3)
 svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "white").style("stroke", "#ef4494").style("stroke-width", 3)
 svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "white").style("stroke", "#ae3cb2").style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",310).attr("r", 6).style("fill", "white").style("stroke", "#56fb7a").style("stroke-width", 3)
 svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 220).text("Feature Envy").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 250).text("Swiss Army Knife").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 280).text("Lacking Object Oriented Design").style("font-size", "14px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 310).text("Large class").style("font-size", "14px").attr("alignment-baseline","middle")
 
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
