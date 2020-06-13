@@ -56,7 +56,6 @@ var fieldCol = "#1f78b4"
              .attr('fill', extendCol)
              .style('stroke',extendCol);
 
-
     // this is to keep the nodes closer to the middle
     var forceX = d3.forceX(width / 2).strength(0.05)
     var forceY = d3.forceY(height / 2).strength(0.05)
@@ -166,6 +165,7 @@ var fieldCol = "#1f78b4"
             .attr("r", 7)
             .style("fill", getNodeColour)
             .style("stroke", getOutline)
+            .style("stroke-width", 4)
             .style()
 
         node.append("title")
@@ -183,8 +183,6 @@ var fieldCol = "#1f78b4"
 
         simulation.force("link")
             .links(links);
-
-
     }
 
     function ticked() {
@@ -276,11 +274,17 @@ var fieldCol = "#1f78b4"
     }
 
     function getOutline(d) {
-        if (d.dependencies >= 10) {
+        if (d.dependencies >= 10 && d.label != "interface") {
             return "red";
         }
+        if (d.dependencies >= 10 && d.label == "interface") {
+            return "#ef4494";
+        }
+        if (d.dependencies == 0 && d.label != "interface") {
+            return "#ae3cb2"
+            }
         else {
-             return getNodeColour
+            return getNodeColour
         }
     }
 
@@ -319,12 +323,15 @@ var svg2 = d3.select("#my_dataviz2")
 svg2.append("circle").attr("cx",100).attr("cy",130).attr("r", 6).style("fill", green)
 svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", lightBlue)
 svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", darkBlue)
-svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "red")
-svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "red")
+svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "white").style("stroke", "red").style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "white").style("stroke", "#ef4494").style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "white").style("stroke", "#ae3cb2").style("stroke-width", 3)
 svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 220).text("Too many dependencies").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 220).text("Feature Envy").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 250).text("Swiss Army Knife").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 280).text("Lacking Object Oriented Design").style("font-size", "14px").attr("alignment-baseline","middle")
 
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
