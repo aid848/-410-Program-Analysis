@@ -160,7 +160,7 @@ var abstractNode = tableau10[0]
             .attr('xlink:href', function (d, i) {return '#edgepath' + i})
             .style("text-anchor", "middle")
             .style("pointer-events", "none")
-            .attr("startOffset", "50%")
+            .attr("startOffset", getOffset)
             .text(function (d) {return d.type});
 
         node = svg.selectAll(".node")
@@ -265,6 +265,15 @@ var abstractNode = tableau10[0]
 //        simulation.alphaDecay(.1);
 //        simulation.velocityDecay(0.8);
 
+    }
+
+    function getOffset(d) {
+        if (d.type == "implements" || d.type == "extends") {
+            return "25%"
+        }
+        if (d.type == "field") {
+            return "60%"
+        }
     }
 
     function getTextColour(d) {
