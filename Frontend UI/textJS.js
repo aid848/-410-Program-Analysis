@@ -1,11 +1,19 @@
 var colors = d3.scaleOrdinal(d3.schemePaired);
-var green = "#59a14f"
-var lightBlue =  "#17becf"
-var darkBlue = "#1f78b4"
-var extendCol = "#1b9e77"
+var pairedColours = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"]
+var tableau10 = ["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
+var green = tableau10[4]
+
+var extendCol = pairedColours[3]
 var implementCol = "#feac3b"
 var fieldCol = "#1f78b4"
-var somecolour = "#fee697"
+
+var largeClass = pairedColours[5]
+var manyDependencies = pairedColours[9]
+var noDependencies = "#f0027f"
+
+var classNode = tableau10[4]
+var interfaceNode = tableau10[3]
+var abstractNode = tableau10[0]
 
     var svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -18,8 +26,8 @@ var somecolour = "#fee697"
     svg.append('defs').append('marker')
         .attrs({'id':'fieldArrowhead',
             'viewBox':'-0 -5 10 10',
-            'refX':17,
-            'refY':-1.5,
+            'refX':33,
+            'refY':0,
             'orient':'auto',
             'markerWidth':5,
             'markerHeight':5,
@@ -28,12 +36,13 @@ var somecolour = "#fee697"
         .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
         .attr('fill', fieldCol)
         .style('stroke',fieldCol);
+        
 
     svg.append('defs').append('marker')
             .attrs({'id':'implementArrowhead',
                 'viewBox':'-0 -5 10 10',
-                'refX':17,
-                'refY':-1.5,
+                'refX':33,
+                'refY':0,
                 'orient':'auto',
                 'markerWidth':5,
                 'markerHeight':5,
@@ -46,8 +55,8 @@ var somecolour = "#fee697"
      svg.append('defs').append('marker')
              .attrs({'id':'extendArrowhead',
                  'viewBox':'-0 -5 10 10',
-                 'refX':17,
-                 'refY':-1.5,
+                 'refX':33,
+                 'refY':0,
                  'orient':'auto',
                  'markerWidth':5,
                  'markerHeight':5,
@@ -56,6 +65,7 @@ var somecolour = "#fee697"
              .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
              .attr('fill', extendCol)
              .style('stroke',extendCol);
+             
 
     // this is to keep the nodes closer to the middle
     var forceX = d3.forceX(width / 2).strength(0.05)
@@ -163,17 +173,18 @@ var somecolour = "#fee697"
             );
 
         node.append("circle")
-            .attr("r", 7)
+            .attr("r", 12.5)
             .style("fill", getNodeColour)
             .style("stroke", getOutline)
             .style("stroke-width", 4)
             .style()
 
         node.append("title")
-            .text(function (d) {return d.id;});
+            .text(function (d) {return d.name;});
 
         node.append("text")
-            .attr("dy", -3)
+            .attr("dy", -10)
+            .attr("dx", 4)
             .text(function (d) {return d.name;})
             .style('fill', getTextColour)
             .attr('font-size', 15);
@@ -256,7 +267,10 @@ var somecolour = "#fee697"
 
     function getTextColour(d) {
         if (d.dependencies >= 10) {
-            return "red";
+            return manyDependencies;
+        } 
+        if (d.numMethods >= 10) {
+            return largeClass;
         } else {
             return "black";
         }
@@ -275,17 +289,14 @@ var somecolour = "#fee697"
     }
 
     function getOutline(d) {
-        if (d.dependencies >= 10 && d.label != "interface") {
-            return "red";
+        if (d.numMethods >= 10) {
+            return largeClass;
         }
-        if (d.dependencies >= 10 && d.label == "interface") {
-            return "#ef4494";
+        if (d.dependencies >= 10) {
+            return manyDependencies
         }
-        if (d.dependencies == 0 && d.label != "interface") {
-            return "#ae3cb2"
-            }
-        if (d.numMethods >= 3) {
-            return somecolour;
+        if (d.dependencies == 0) {
+            return noDependencies
         }
         else {
             return getNodeColour
@@ -294,13 +305,13 @@ var somecolour = "#fee697"
 
     function getNodeColour(d) {
         if (d.label == "class") {
-            return green;
+            return classNode;
         }
         if (d.label == "interface") {
-            return  lightBlue;
+            return  interfaceNode;
         }
         if (d.label == "abstract") {
-            return darkBlue;
+            return abstractNode;
         }
          else {
             return green;
@@ -324,20 +335,18 @@ var somecolour = "#fee697"
 
 var svg2 = d3.select("#my_dataviz2")
 
-svg2.append("circle").attr("cx",100).attr("cy",130).attr("r", 6).style("fill", green)
-svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", lightBlue)
-svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", darkBlue)
-svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "white").style("stroke", "red").style("stroke-width", 3)
-svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "white").style("stroke", "#ef4494").style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",130).attr("r", 6).style("fill", classNode)
+svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", interfaceNode)
+svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", abstractNode)
+svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "white").style("stroke", largeClass).style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "white").style("stroke", manyDependencies).style("stroke-width", 3)
 svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "white").style("stroke", "#ae3cb2").style("stroke-width", 3)
-svg2.append("circle").attr("cx",100).attr("cy",310).attr("r", 6).style("fill", "white").style("stroke", "#56fb7a").style("stroke-width", 3)
-svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 220).text("Large Class").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 250).text("Swiss Army Knife").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 280).text("Lacking Object Oriented Design").style("font-size", "14px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 310).text("Large class").style("font-size", "14px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 220).text("Large Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 250).text("Many dependencies").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 280).text("No dependencies").style("fill", "black").style("font-size", "14px").attr("alignment-baseline","middle")
 
 //    function dragended(d) {
 //        if (!d3.event.active) simulation.alphaTarget(0);
