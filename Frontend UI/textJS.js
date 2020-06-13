@@ -329,7 +329,7 @@ svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "
 svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").attr("alignment-baseline","middle")
-svg2.append("text").attr("x", 120).attr("y", 220).text("Feature Envy").style("font-size", "15px").attr("alignment-baseline","middle")
+svg2.append("text").attr("x", 120).attr("y", 220).text("Large Class").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 250).text("Swiss Army Knife").style("font-size", "15px").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 280).text("Lacking Object Oriented Design").style("font-size", "14px").attr("alignment-baseline","middle")
 
