@@ -2,13 +2,15 @@ var colors = d3.scaleOrdinal(d3.schemePaired);
 var pairedColours = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"]
 var tableau10 = ["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
 var green = tableau10[4]
+var lightBlue =  "#17becf"
+var darkBlue = "#1f78b4"
 
 var extendCol = pairedColours[3]
 var implementCol = "#feac3b"
 var fieldCol = "#1f78b4"
 
 var largeClass = pairedColours[5]
-var manyDependencies = pairedColours[9]
+var manyDependencies = "black"
 var noDependencies = "#f0027f"
 
 var classNode = tableau10[4]
@@ -338,9 +340,9 @@ var svg2 = d3.select("#my_dataviz2")
 svg2.append("circle").attr("cx",100).attr("cy",130).attr("r", 6).style("fill", classNode)
 svg2.append("circle").attr("cx",100).attr("cy",160).attr("r", 6).style("fill", interfaceNode)
 svg2.append("circle").attr("cx",100).attr("cy",190).attr("r", 6).style("fill", abstractNode)
-svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "white").style("stroke", largeClass).style("stroke-width", 3)
-svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "white").style("stroke", manyDependencies).style("stroke-width", 3)
-svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "white").style("stroke", "#ae3cb2").style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",220).attr("r", 6).style("fill", "beige").style("stroke", largeClass).style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",250).attr("r", 6).style("fill", "beige").style("stroke", manyDependencies).style("stroke-width", 3)
+svg2.append("circle").attr("cx",100).attr("cy",280).attr("r", 6).style("fill", "beige").style("stroke", "#ae3cb2").style("stroke-width", 3)
 svg2.append("text").attr("x", 120).attr("y", 130).text("Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 160).text("Interface").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
 svg2.append("text").attr("x", 120).attr("y", 190).text("Abstract Class").style("font-size", "15px").style("fill", "black").attr("alignment-baseline","middle")
