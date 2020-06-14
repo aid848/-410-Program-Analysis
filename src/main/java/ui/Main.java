@@ -18,6 +18,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         Parser p = new Parser();
+        SubDirMenu test = new SubDirMenu();
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                test.pack();
+//                test.setVisible(true);
+//            }
+//        });
 
         // modified from https://mkyong.com/swing/java-swing-jfilechooser-example/
         JFileChooser fileChooser = new JFileChooser();

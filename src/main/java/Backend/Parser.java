@@ -9,6 +9,9 @@ import org.apache.bcel.classfile.Method;
 import ui.Main;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -46,13 +49,26 @@ public class Parser {
         } else if(dir.isFile()){
             if (dir.getName().endsWith(".jar")) {
                 try {
+                    new File("temp").mkdir();
                     new ZipFile(dir).extractAll("temp");
                 } catch (ZipException e) {
                     e.printStackTrace();
                     throw new RuntimeException("Unable to extract directory");
                 }
-                parseDir("temp");
-                dir.delete();
+                File[] subDirs = new File("temp").listFiles();
+                // todo call ui
+                String[] selected = {"temp\\interfaces", "temp\\entities"};
+                for (String sub: selected){
+                    parseDir(sub);
+                }
+                try {
+                    Files.walk(Paths.get(dir.getPath()))
+                            .map(Path::toFile)
+                            .sorted((o1, o2) -> -o1.compareTo(o2))
+                            .forEach(File::delete);
+                }catch (Exception e){
+                    throw new RuntimeException("failed to delete temp directory");
+                }
             }else {
                 throw new RuntimeException("only jar files supported");
             }
