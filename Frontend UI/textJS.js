@@ -306,9 +306,6 @@ var abstractNode = tableau10[0]
         if (d.dependencies >= 10) {
             return manyDependencies
         }
-        if (d.dependencies == 0) {
-            return noDependencies
-        }
         else {
             return getNodeColour
         }
