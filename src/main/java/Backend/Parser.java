@@ -1,5 +1,7 @@
 package Backend;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
@@ -9,6 +11,8 @@ import ui.Main;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Parser {
     private final String[] primitives = {"boolean", "byte", "char", "short", "int", "long", "float", "double"};
@@ -39,7 +43,20 @@ public class Parser {
 
                 }
             }
-        } else {
+        } else if(dir.isFile()){
+            if (dir.getName().endsWith(".jar")) {
+                try {
+                    new ZipFile(dir).extractAll("temp");
+                } catch (ZipException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Unable to extract directory");
+                }
+                parseDir("temp");
+                dir.delete();
+            }else {
+                throw new RuntimeException("only jar files supported");
+            }
+        }else {
             throw new RuntimeException("Invalid Directory");
         }
     }
@@ -103,4 +120,7 @@ public class Parser {
         });
 
     }
+
 }
+
+
