@@ -107,13 +107,13 @@ public class Exporter {
         FileWriter f = new FileWriter(new File(directory+".json"));
         outer.writeJSONString(f);
         f.close();
-        File output = new File("Frontend UI/graph.json");
-        if (output.exists()) {
-            output.delete();
-        }
-        FileWriter defaultForVisualWriter = new FileWriter(output);
-        outer.writeJSONString(defaultForVisualWriter);
-        defaultForVisualWriter.close();
+//        File output = new File("Frontend UI/graph.json");
+//        if (output.exists()) {
+//            output.delete();
+//        }
+//        FileWriter defaultForVisualWriter = new FileWriter(output);
+//        outer.writeJSONString(defaultForVisualWriter);
+//        defaultForVisualWriter.close();
     }
 
     private void writeDependencies(JSONArray nodes) {

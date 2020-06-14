@@ -1,9 +1,13 @@
+var fileselect = window.prompt("enter graph filename (without .json ending)") + ".json"
+while (fileselect == undefined)
+
 var colors = d3.scaleOrdinal(d3.schemePaired);
 var pairedColours = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"]
 var tableau10 = ["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]
 var green = tableau10[4]
 var lightBlue =  "#17becf"
 var darkBlue = "#1f78b4"
+// var fileselect = "graph.json"
 
 var extendCol = pairedColours[3]
 var implementCol = "#feac3b"
@@ -100,8 +104,8 @@ var abstractNode = tableau10[0]
 //          }))
 //          .on('tick', ticked);
 
-
-    d3.json("graph.json", function (error, graph) {
+        // window.alert(fileselect)
+    d3.json(fileselect, function (error, graph) {
         if (error) throw error;
         update(graph.links, graph.nodes);
     })
