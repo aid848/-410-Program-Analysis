@@ -7,12 +7,16 @@ import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import ui.Main;
+import ui.SubDirMenu;
 
+import java.awt.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -57,12 +61,32 @@ public class Parser {
                 }
                 File[] subDirs = new File("temp").listFiles();
                 // todo call ui
-                String[] selected = {"temp\\interfaces", "temp\\entities"};
+                List<String> selected = new ArrayList<>();
+
+                try {
+                    EventQueue.invokeAndWait (new Runnable() {
+                        public void run() {
+                            SubDirMenu test = new SubDirMenu(subDirs);
+                            test.pack();
+                            test.setVisible(true);
+                            selected.addAll(test.getSelected());
+                            System.out.println(selected.toString());
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
                 for (String sub: selected){
-                    parseDir(sub);
+                    try {
+                        parseDir(sub);
+                    }catch (Exception e){
+                        System.out.println("couldn't parse " + sub);
+                    }
                 }
                 try {
-                    Files.walk(Paths.get(dir.getPath()))
+                    Files.walk(Paths.get("temp"))
                             .map(Path::toFile)
                             .sorted((o1, o2) -> -o1.compareTo(o2))
                             .forEach(File::delete);
@@ -70,6 +94,7 @@ public class Parser {
                     throw new RuntimeException("failed to delete temp directory");
                 }
             }else {
+                System.out.println(dirPath);
                 throw new RuntimeException("only jar files supported");
             }
         }else {
