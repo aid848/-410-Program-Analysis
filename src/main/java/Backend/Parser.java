@@ -1,14 +1,25 @@
 package Backend;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import ui.Main;
+import ui.SubDirMenu;
 
+import java.awt.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class Parser {
     private final String[] primitives = {"boolean", "byte", "char", "short", "int", "long", "float", "double"};
@@ -39,7 +50,54 @@ public class Parser {
 
                 }
             }
-        } else {
+        } else if(dir.isFile()){
+            if (dir.getName().endsWith(".jar")) {
+                try {
+                    new File("temp").mkdir();
+                    new ZipFile(dir).extractAll("temp");
+                } catch (ZipException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException("Unable to extract directory");
+                }
+                File[] subDirs = new File("temp").listFiles();
+                // todo call ui
+                List<String> selected = new ArrayList<>();
+
+                try {
+                    EventQueue.invokeAndWait (new Runnable() {
+                        public void run() {
+                            SubDirMenu test = new SubDirMenu(subDirs);
+                            test.pack();
+                            test.setVisible(true);
+                            selected.addAll(test.getSelected());
+                            System.out.println(selected.toString());
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                for (String sub: selected){
+                    try {
+                        parseDir(sub);
+                    }catch (Exception e){
+                        System.out.println("couldn't parse " + sub);
+                    }
+                }
+                try {
+                    Files.walk(Paths.get("temp"))
+                            .map(Path::toFile)
+                            .sorted((o1, o2) -> -o1.compareTo(o2))
+                            .forEach(File::delete);
+                }catch (Exception e){
+                    throw new RuntimeException("failed to delete temp directory");
+                }
+            }else {
+                System.out.println(dirPath);
+                throw new RuntimeException("only jar files supported");
+            }
+        }else {
             throw new RuntimeException("Invalid Directory");
         }
     }
@@ -103,4 +161,7 @@ public class Parser {
         });
 
     }
+
 }
+
+
