@@ -123,6 +123,7 @@ var abstractNode = tableau10[0]
     }
 
     function update(links, nodes) {
+
         link = svg.selectAll(".link")
             .data(links)
             .enter()
@@ -132,6 +133,7 @@ var abstractNode = tableau10[0]
             .attr("stroke", getLineColour)
             .attr("stroke-opacity", 0.6)
             .attr("stroke-width", 1.5);
+
 
         link.append("title")
             .text(function (d) {return d.type;});
@@ -201,6 +203,8 @@ var abstractNode = tableau10[0]
 
         simulation.force("link")
             .links(links);
+
+
     }
 
     function ticked() {
@@ -224,6 +228,9 @@ var abstractNode = tableau10[0]
 //            .attr("y1", function (d) {return d.source.y;})
 //            .attr("x2", function (d) {return d.target.x;})
 //            .attr("y2", function (d) {return d.target.y;});
+
+
+
 
 // edgepaths.attr('d', function (d) {
 //            return 'M ' +
